@@ -1,4 +1,4 @@
-import { deleteAllNews, deleteNews, getAllNews } from "@/database/bookmarkrepo";
+import { deleteAllNews, deleteNews, deleteNewsByUrl, getAllNews } from "@/database/bookmarkrepo";
 import { styles } from "@/style/mystyle";
 import { NewsItems } from "@/types/newsResponse";
 import { useCallback, useEffect, useState } from "react";
@@ -100,7 +100,7 @@ export default function BookMarkScreen(){
                 <View style={styles.newsFooter}>
                   <Text style={styles.newsReadMore}>Read more</Text>
                 <TouchableOpacity onPress={() => { 
-                  deleteNews(item.id);
+                  deleteNewsByUrl(item.url)
                   loadNews();
                  }}>
              <Ionicons name="bookmark-sharp" size={20} color={colors.amberColor} />
