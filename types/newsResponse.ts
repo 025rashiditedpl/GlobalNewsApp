@@ -1,8 +1,9 @@
-export type NewsSource = {
-  id: string | null;
-  name: string;
+
+export type NewsApiResponse = {
+  status: string;
+  totalResults: number;
+  articles: NewsItems[];
 };
- 
 export type NewsItems = {
   source: NewsSource;
   author: string | null;
@@ -13,10 +14,9 @@ export type NewsItems = {
   publishedAt: string;
   content: string | null;
 };
- 
-export type NewsApiResponse = {
-  status: string;
-  totalResults: number;
-  articles: NewsItems[];
+
+export type NewsSource = {
+  id: string | null;
+  name: string;
 };
  

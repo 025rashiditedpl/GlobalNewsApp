@@ -9,6 +9,7 @@ import { Link, useRouter } from 'expo-router';
 import { styles } from '@/style/mystyle';
 import { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createTables } from '@/database/bookmarkdb';
 
 
 export default function SplashScreen(){
@@ -17,6 +18,9 @@ export default function SplashScreen(){
   
 
  useEffect(() => {
+
+    createTables();
+
   setTimeout(async () => {
     const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
 

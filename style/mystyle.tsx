@@ -473,6 +473,12 @@ buttonRow: {
   justifyContent: 'space-between',
   marginTop: 15,
 },
+trashicon:{
+     alignContent:'center',
+    alignItems:'center',
+    alignSelf:'center',
+    marginStart:10,
+}
 
 
 

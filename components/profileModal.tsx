@@ -14,7 +14,7 @@ type Props = {
    editItem?: string | null;
    placeholder?:string | null
    onClose: () => void;
-   onUpdate:(value:string | null)=>void;
+   onUpdate:(value:string | null,key:string | null)=>void;
 };
 
 export default function ProfileModal({ visible,editItem, placeholder, onClose, onUpdate}: Props) {
@@ -33,7 +33,7 @@ export default function ProfileModal({ visible,editItem, placeholder, onClose, o
   }, [editItem,placeholder, visible]);
 
   const handleUpdate = () => {
-  onUpdate(editValue);
+  onUpdate(editValue,placeholdervalue);
   setEditValue('') 
   setPlaceHolder('')
   onClose();

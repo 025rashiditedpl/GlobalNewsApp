@@ -40,6 +40,7 @@ export default function RegisterScreen() {
  
   
 const handleSubmit = async () => {
+    setCountry('India')
   
     const newErrors = validateRegisterForm(username, email, phone, password);
     if (Object.keys(newErrors).length > 0) {

@@ -4,11 +4,13 @@ import { Categories } from "@/types/categories";
 import { NewsItems } from "@/types/newsResponse";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { View,Text, TouchableOpacity, FlatList, ActivityIndicator } from "react-native";
 import { Image } from 'expo-image';
 import { keyValues } from "@/util/constants";
+import { addNews, deleteNews, deleteNewsByUrl, getAllNews } from "@/database/bookmarkrepo";
+import { DbNews } from "@/types/dbnews";
 
 
 export default function HomeScreen(){
@@ -19,7 +21,10 @@ export default function HomeScreen(){
     const [news, setNews] = useState<NewsItems[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage,setErrorMessage]=useState('')
-   
+   const [bookmarkedUrls, setBookmarkedUrls] = useState<string[]>([]);
+    
+
+     
 
  useEffect(() => {
     
@@ -38,6 +43,47 @@ export default function HomeScreen(){
    useEffect(() => {
     fetchNews();
   }, [selectedCategory]);
+
+
+ const updateBookmarkStatus = useCallback(() => {
+    const savedItems = getAllNews();
+    const urls = savedItems.map(item => item.url);
+    setBookmarkedUrls(urls);
+  }, []);
+
+  
+  useFocusEffect(
+    useCallback(() => {
+      updateBookmarkStatus();
+    }, [updateBookmarkStatus])
+  );
+
+   const toggleBookmark = (item: NewsItems) => {
+    const isBookmarked = bookmarkedUrls.includes(item.url);
+
+    if (isBookmarked) {
+      
+      deleteNewsByUrl(item.url);
+    } else {
+  
+      const saveNews: DbNews = {
+        id: 0,
+        source_id: item.source.id ?? '',
+        source_name: item.source.name,
+        author: item.author ?? '',
+        title: item.title ?? '',
+        description: item.description ?? '',
+        url: item.url,
+        urlToImage: item.urlToImage ?? '',
+        publishedAt: item.publishedAt,
+        content: item.content ?? ''
+      };
+      addNews(saveNews);
+    }
+    
+    updateBookmarkStatus();
+  };
+
 
      const fetchNews = async () => {
     try {
@@ -138,7 +184,9 @@ return(
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.newsList}
           showsVerticalScrollIndicator={false}
-          renderItem={({ item }) => (
+          renderItem={({ item }) => {
+               const isSaved = bookmarkedUrls.includes(item.url);
+            return(
             <View style={styles.newsCard}>
               {item.urlToImage ? (
                 <Image
@@ -166,11 +214,12 @@ return(
                 </Text>
                 <View style={styles.newsFooter}>
                   <Text style={styles.newsReadMore}>Read more</Text>
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={() => toggleBookmark(item)}>
                     <Ionicons
-                      name="bookmark-outline"
+                      name={isSaved ? 'bookmark-sharp' : 'bookmark-outline'} 
                       size={20}
-                      color="#1a1a2e"
+                     color={isSaved ? colors.amberColor : colors.blackColor}
+                    
                     />
                   </TouchableOpacity>
                 </View>
@@ -178,6 +227,9 @@ return(
               </View>
             </View>
           )}
+          }
+            
+           
         />
           )
           :(

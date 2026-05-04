@@ -10,18 +10,25 @@ import ProfileModal from "@/components/profileModal";
 export default function ProfileScreen(){
    const[isReadOnly,SetReadOnly]=useState(true)
    const [users, setUsers] = useState<User>();
-   const[username,setUserName]=useState<string | ''>('')
+
    const [profileImage, setProfileImage] = useState<string | null>(null);
    const [modalVisible, setModalVisible] = useState(false);
    const[editingValue,setEditValue]=useState('')
    const [placeHolderValue,setPlaceHolder]=useState('')
+
+   const FIELD_MAP: Record<string, keyof User> = {
+  "Username": "username",
+  "Email":    "email",
+  "Phone":    "phone",
+  "Country":  "country",
+};
 
  useEffect(() => {
     const fetchUserData = async () => {
       const userData = await AsyncStorage.getItem('user');
       if (userData) {
         setUsers(JSON.parse(userData));
-        setUserName(users?.username?'':'');
+      
       }
   
       const savedImage = await AsyncStorage.getItem('profileImage');
@@ -167,7 +174,7 @@ export default function ProfileScreen(){
    <ProfileRow
    icon="globe-outline"
    label="Country"
-   value={users?.country?'':'India'}
+   value={users?.country}
    isEdit={isReadOnly}
    onPress={(value,placeholder)=>{
               setModalVisible(true)
@@ -180,16 +187,22 @@ export default function ProfileScreen(){
 
            
 <ProfileModal
- visible={modalVisible}
- editItem={editingValue}
- placeholder={placeHolderValue} 
- onUpdate={(value)=>{
-     
- }}
- onClose={()=>{
-  setModalVisible(false)
- }} 
+  visible={modalVisible}
+  editItem={editingValue}
+  placeholder={placeHolderValue}
+  onUpdate={async (value, placeholder) => {
+    const fieldKey = FIELD_MAP[placeholder ?? ""];
 
+    if (!fieldKey) return;
+
+    const updatedUser: User = { ...users, [fieldKey]: value } as User;
+
+    await AsyncStorage.setItem("user", JSON.stringify(updatedUser));
+
+    setUsers(updatedUser);       
+    setModalVisible(false);
+  }}
+  onClose={() => setModalVisible(false)}
 />
 
             </View>
@@ -251,7 +264,7 @@ const ProfileRow = ({
       </TouchableOpacity>
     
 
-      {/* Divider */}
+    
       {
         label!='Country'?(
           <View style={styles.profiledivider} />
