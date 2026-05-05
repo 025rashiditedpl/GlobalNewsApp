@@ -65,8 +65,13 @@ export default function BookMarkScreen(){
                      </TouchableOpacity>
               </View> 
 
-
-       <FlatList
+       {
+        news.length==0?(
+          <View style={styles.loaderContainer}>
+             <Text style={styles.alertText}>No Data Found</Text>
+          </View>
+        ):(
+ <FlatList
           data={news}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.newsList}
@@ -111,6 +116,9 @@ export default function BookMarkScreen(){
             </View>
           )}
         />
+        )
+       }
+      
     
            </View>
           )

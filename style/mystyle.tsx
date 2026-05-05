@@ -478,7 +478,104 @@ trashicon:{
     alignItems:'center',
     alignSelf:'center',
     marginStart:10,
-}
+},
+
+// error boundary
+
+errorcontainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#f5f4f0",
+    paddingHorizontal: 24,
+    gap: 12,
+  },
+
+  iconCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: "#FCEBEB",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 8,
+  },
+  errortitle: {
+    fontSize: 20,
+    fontWeight: "600",
+    color: "#1a1a2e",
+    textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "#888",
+    textAlign: "center",
+    lineHeight: 20,
+    maxWidth: 260,
+  },
+
+  errorBox: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    padding: 12,
+    width: "100%",
+    borderWidth: 0.5,
+    borderColor: "#E24B4A",
+    marginTop: 4,
+  },
+  errorBodyText: {
+    fontSize: 12,
+    color: "#E24B4A",
+    fontFamily: "monospace",
+    lineHeight: 18,
+  },
+  retryBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    backgroundColor: "#1a1a2e",
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 24,
+    marginTop: 8,
+  },
+  retryText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#fff",
+  },
+   alertText: {
+    fontSize: 20,
+    fontWeight: '500',
+    marginBottom: 20,
+    color: '#333',
+  },
+
+   webcontainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  header: {
+    paddingTop: Platform.OS === "ios" ? 54 : 40,
+    paddingHorizontal: 16,
+    paddingBottom: 10,
+    backgroundColor: "#fff",
+    borderBottomWidth: 0.5,
+    borderBottomColor: "rgba(0,0,0,0.08)",
+  },
+  backBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  backText: {
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#1a1a2e",
+  },
+  webview: {
+    flex: 1,
+  },
 
 
 

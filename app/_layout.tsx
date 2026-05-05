@@ -4,21 +4,24 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
-
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-
+ 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-       <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="index" />
-      <Stack.Screen name="login" />
-      <Stack.Screen name="home" />
-      <Stack.Screen name="register" />
-    </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    
+    <ErrorBoundary>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index"    />
+          <Stack.Screen name="login"    />
+          <Stack.Screen name="register" />
+          <Stack.Screen name="(tabs)"   />
+        </Stack>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }

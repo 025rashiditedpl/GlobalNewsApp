@@ -6,14 +6,17 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import { View,Text, TouchableOpacity, FlatList, ActivityIndicator } from "react-native";
+import { View,Text, TouchableOpacity, FlatList, ActivityIndicator, RefreshControl } from "react-native";
 import { Image } from 'expo-image';
 import { keyValues } from "@/util/constants";
 import { addNews, deleteNews, deleteNewsByUrl, getAllNews } from "@/database/bookmarkrepo";
 import { DbNews } from "@/types/dbnews";
+import { useNetInfo } from "@react-native-community/netinfo";
+import NoInternet from "@/components/Nointernet";
 
 
 export default function HomeScreen(){
+
     const router = useRouter();
     const [categories, setCategories] = useState<Categories[]>([]);
     const [selectedId, setSelectedId] = useState<number>(1);
@@ -21,9 +24,9 @@ export default function HomeScreen(){
     const [news, setNews] = useState<NewsItems[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [errorMessage,setErrorMessage]=useState('')
-   const [bookmarkedUrls, setBookmarkedUrls] = useState<string[]>([]);
-    
-
+    const [bookmarkedUrls, setBookmarkedUrls] = useState<string[]>([]);
+    const { isConnected } = useNetInfo();
+    const [refreshing, setRefreshing] = useState(false);
      
 
  useEffect(() => {
@@ -112,7 +115,6 @@ export default function HomeScreen(){
       setIsLoading(false);
     }
   };
- 
 
 
 
@@ -121,6 +123,19 @@ export default function HomeScreen(){
     await AsyncStorage.setItem('isLoggedIn', 'false');
     router.replace('/login');
   };
+
+const onRefresh = useCallback(async () => {
+  setRefreshing(true);
+  await fetchNews();
+  setRefreshing(false);
+}, [selectedCategory]);
+
+ 
+  if (!isConnected) {
+    return (
+      <NoInternet onRetry={fetchNews}/>
+    )
+  }
 
 return(
     <View style={styles.homeContainer}>
@@ -132,7 +147,7 @@ return(
           }}>
          <Image
          style={styles.logouticon}
-        source={require('../../assets/images/logoutoff.png')}
+        source={require('../../../assets/images/logoutoff.png')}
         />
        
         </TouchableOpacity>
@@ -179,15 +194,33 @@ return(
       </View>
         ):(
           errorMessage==''?(
- <FlatList
+          <FlatList
           data={news}
           keyExtractor={(item, index) => index.toString()}
           contentContainerStyle={styles.newsList}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+             <RefreshControl
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      colors={["#1a1a2e"]} 
+      tintColor={"#1a1a2e"}  
+      title="Refreshing news..." 
+      titleColor={"#888"}
+    />
+          }
           renderItem={({ item }) => {
                const isSaved = bookmarkedUrls.includes(item.url);
             return(
-            <View style={styles.newsCard}>
+            <TouchableOpacity style={styles.newsCard}
+            activeOpacity={1}
+            onPress={()=>{
+               router.push({
+               pathname: "/(tabs)/home/detail",
+               params:{detailitem:JSON.stringify(item)}
+              });
+            }}
+            >
               {item.urlToImage ? (
                 <Image
                   source={{ uri: item.urlToImage }}
@@ -225,7 +258,7 @@ return(
                 </View>
 
               </View>
-            </View>
+            </TouchableOpacity>
           )}
           }
             
